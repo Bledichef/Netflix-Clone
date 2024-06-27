@@ -28,7 +28,7 @@ const ProfileManager = () => {
   };
 
   const handleSelectProfile = (profile) => {
-    navigation.navigate('Home', { profile });
+    navigation.navigate('Home', { profile }); // Passer le profil lors de la navigation
   };
 
   return (

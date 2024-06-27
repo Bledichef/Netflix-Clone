@@ -1,17 +1,18 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
+import AnimatedMovieCard from './AnimatedMovieCard';
 import styles from '../../styles/HomeScreenStyles';
 
-const MovieSection = ({ title, movies, renderMovieItem, loadMoreMovies }) => (
+const MovieSection = ({ title, movies, navigation, profile }) => (
   <View>
     <Text style={styles.header}>{title}</Text>
     <FlatList
       horizontal
       data={movies}
       keyExtractor={(item) => item.id.toString()}
-      renderItem={renderMovieItem}
-      onEndReached={loadMoreMovies}
-      onEndReachedThreshold={0.5}
+      renderItem={({ item }) => (
+        <AnimatedMovieCard movie={item} navigation={navigation} profile={profile} />
+      )}
       showsHorizontalScrollIndicator={false}
     />
   </View>

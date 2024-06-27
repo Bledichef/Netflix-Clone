@@ -1,10 +1,9 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../screens/HomeScreen';
+import DrawerNavigator from './DrawerNavigator';
 import DetailsScreen from '../screens/DetailsScreen';
-import FavoritesScreen from '../screens/FavoritesScreen';
-import ProfileManager from '../components/ProfileManager';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Stack = createStackNavigator();
 
@@ -12,36 +11,29 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="ProfileManager"
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#000',
+            backgroundColor: '#1c1c1c', // Harmoniser avec le reste de l'app
           },
-          headerTintColor: '#fff',
+          headerTintColor: '#fff', // Couleur du texte du header
           headerTitleStyle: {
-            fontWeight: 'bold',
+            fontWeight: 'bold', // Texte en gras pour le titre du header
           },
+          headerBackTitleVisible: false, // Masquer le texte du bouton de retour
+          headerBackImage: () => (
+            <Icon name="arrow-back" size={24} color="#fff" /> // Icône de retour personnalisée
+          ),
         }}
       >
         <Stack.Screen
-          name="ProfileManager"
-          component={ProfileManager}
-          options={{ title: 'Select Profile' }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: 'Popular Movies' }}
+          name="Drawer"
+          component={DrawerNavigator}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Details"
           component={DetailsScreen}
           options={{ title: 'Movie Details' }}
-        />
-        <Stack.Screen
-          name="Favorites"
-          component={FavoritesScreen}
-          options={{ title: 'My Favorites' }}  
         />
       </Stack.Navigator>
     </NavigationContainer>

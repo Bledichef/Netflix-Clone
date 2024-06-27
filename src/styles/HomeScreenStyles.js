@@ -29,6 +29,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#000',
   },
+  searchBarContainer: {
+    backgroundColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderTopColor: 'transparent',
+    padding: 0,
+    marginBottom: 20,
+  },
+  searchBarInput: {
+    backgroundColor: '#333',
+  },
 });
 
 export default styles;
