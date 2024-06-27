@@ -3,7 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
 import DetailsScreen from '../screens/DetailsScreen';
-import FavoritesScreen from '../screens/FavoritesScreen';  
+import FavoritesScreen from '../screens/FavoritesScreen';
+import ProfileManager from '../components/ProfileManager';
 
 const Stack = createStackNavigator();
 
@@ -11,7 +12,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="ProfileManager"
         screenOptions={{
           headerStyle: {
             backgroundColor: '#000',
@@ -22,6 +23,11 @@ const AppNavigator = () => {
           },
         }}
       >
+        <Stack.Screen
+          name="ProfileManager"
+          component={ProfileManager}
+          options={{ title: 'Select Profile' }}
+        />
         <Stack.Screen
           name="Home"
           component={HomeScreen}

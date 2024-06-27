@@ -1,31 +1,33 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const getFavorites = async () => {
+const FAVORITES_KEY = 'favorites';
+
+export const getFavorites = async (profileName) => {
   try {
-    const jsonValue = await AsyncStorage.getItem('@favorites');
-    return jsonValue != null ? JSON.parse(jsonValue) : [];
-  } catch (e) {
-    console.error(e);
+    const favorites = await AsyncStorage.getItem(`${FAVORITES_KEY}_${profileName}`);
+    return favorites ? JSON.parse(favorites) : [];
+  } catch (error) {
+    console.error('Error fetching favorites:', error);
     return [];
   }
 };
 
-export const addFavorite = async (movie) => {
+export const addFavorite = async (movie, profileName) => {
   try {
-    const favorites = await getFavorites();
-    const newFavorites = [...favorites, movie];
-    await AsyncStorage.setItem('@favorites', JSON.stringify(newFavorites));
-  } catch (e) {
-    console.error(e);
+    const favorites = await getFavorites(profileName);
+    const updatedFavorites = [...favorites, movie];
+    await AsyncStorage.setItem(`${FAVORITES_KEY}_${profileName}`, JSON.stringify(updatedFavorites));
+  } catch (error) {
+    console.error('Error adding favorite:', error);
   }
 };
 
-export const removeFavorite = async (movieId) => {
+export const removeFavorite = async (movieId, profileName) => {
   try {
-    const favorites = await getFavorites();
-    const newFavorites = favorites.filter(movie => movie.id !== movieId);
-    await AsyncStorage.setItem('@favorites', JSON.stringify(newFavorites));
-  } catch (e) {
-    console.error(e);
+    const favorites = await getFavorites(profileName);
+    const updatedFavorites = favorites.filter((fav) => fav.id !== movieId);
+    await AsyncStorage.setItem(`${FAVORITES_KEY}_${profileName}`, JSON.stringify(updatedFavorites));
+  } catch (error) {
+    console.error('Error removing favorite:', error);
   }
 };

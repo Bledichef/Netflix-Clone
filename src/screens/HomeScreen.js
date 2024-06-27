@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Button } from 'react-native';
+import { ScrollView, ActivityIndicator, View, Text, Image, TouchableOpacity, StyleSheet, Button } from 'react-native'; // Ajout de View, Text, Image, TouchableOpacity, StyleSheet, Button
 import axios from 'axios';
-import { SearchBar } from 'react-native-elements';
+import { useRoute } from '@react-navigation/native';
+import SearchBarComponent from '../components/HomeScreen/SearchBarComponent';
+import ButtonComponent from '../components/HomeScreen/ButtonComponent';
+import MovieSection from '../components/HomeScreen/MovieSection';
+import styles from '../styles/HomeScreenStyles';
 
 const API_KEY = '89e802175d8ccb6b4549eef6f85c78ec';
 
 const HomeScreen = ({ navigation }) => {
+  const route = useRoute();
+  const { profile } = route.params;
   const [popularMovies, setPopularMovies] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
@@ -56,14 +62,10 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const renderMovieItem = (category) => ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Details', { movie: item })}>
+  const renderMovieItem = ({ item }) => (
+    <TouchableOpacity onPress={() => navigation.navigate('Details', { movie: item, profile })}>
       <Image source={{ uri: `https://image.tmdb.org/t/p/w500/${item.poster_path}` }} style={styles.poster} />
     </TouchableOpacity>
-  );
-
-  const renderSectionHeader = (title) => (
-    <Text style={styles.header}>{title}</Text>
   );
 
   if (loading) {
@@ -76,106 +78,19 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <View style={styles.buttonContainer}>
-        <Button title="View Favorites" onPress={() => navigation.navigate('Favorites')} />
-      </View>
-      <SearchBar
-        placeholder="Search Movies..."
-        onChangeText={handleSearch}
-        value={search}
-        containerStyle={styles.searchBarContainer}
-        inputContainerStyle={styles.searchBarInput}
-      />
+      <ButtonComponent navigation={navigation} profile={profile} />
+      <SearchBarComponent search={search} handleSearch={handleSearch} />
       {search.length > 2 ? (
-        <>
-          {renderSectionHeader('Search Results')}
-          <FlatList
-            horizontal
-            data={searchResults}
-            keyExtractor={(item) => `search-${item.id}`}
-            renderItem={renderMovieItem('search')}
-            showsHorizontalScrollIndicator={false}
-          />
-        </>
+        <MovieSection title="Search Results" movies={searchResults} renderMovieItem={renderMovieItem} loadMoreMovies={() => {}} />
       ) : (
         <>
-          {renderSectionHeader('Popular Movies')}
-          <FlatList
-            horizontal
-            data={popularMovies}
-            keyExtractor={(item) => `popular-${item.id}`}
-            renderItem={renderMovieItem('popular')}
-            onEndReached={loadMoreMovies}
-            onEndReachedThreshold={0.5}
-            showsHorizontalScrollIndicator={false}
-          />
-
-          {renderSectionHeader('Upcoming Movies')}
-          <FlatList
-            horizontal
-            data={upcomingMovies}
-            keyExtractor={(item) => `upcoming-${item.id}`}
-            renderItem={renderMovieItem('upcoming')}
-            onEndReached={loadMoreMovies}
-            onEndReachedThreshold={0.5}
-            showsHorizontalScrollIndicator={false}
-          />
-
-          {renderSectionHeader('Top Rated Movies')}
-          <FlatList
-            horizontal
-            data={topRatedMovies}
-            keyExtractor={(item) => `toprated-${item.id}`}
-            renderItem={renderMovieItem('toprated')}
-            onEndReached={loadMoreMovies}
-            onEndReachedThreshold={0.5}
-            showsHorizontalScrollIndicator={false}
-          />
+          <MovieSection title="Popular Movies" movies={popularMovies} renderMovieItem={renderMovieItem} loadMoreMovies={loadMoreMovies} />
+          <MovieSection title="Upcoming Movies" movies={upcomingMovies} renderMovieItem={renderMovieItem} loadMoreMovies={loadMoreMovies} />
+          <MovieSection title="Top Rated Movies" movies={topRatedMovies} renderMovieItem={renderMovieItem} loadMoreMovies={loadMoreMovies} />
         </>
       )}
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  contentContainer: {
-    padding: 10,
-    paddingBottom: 50, // Ajout d'un espace en bas pour mieux voir la dernière catégorie
-  },
-  buttonContainer: {
-    marginVertical: 10,
-  },
-  header: {
-    color: '#fff',
-    fontSize: 24,
-    marginVertical: 10,
-  },
-  poster: {
-    width: 120,
-    height: 180,
-    margin: 5,
-    borderRadius: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
-  },
-  searchBarContainer: {
-    backgroundColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderTopColor: 'transparent',
-    padding: 0,
-    marginBottom: 20,
-  },
-  searchBarInput: {
-    backgroundColor: '#333',
-  },
-});
 
 export default HomeScreen;
